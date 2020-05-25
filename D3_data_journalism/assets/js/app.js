@@ -100,6 +100,12 @@ function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
 }
 
 // (6) function used for updating state names
+// var abbrGroup = chartGroup.selectAll("circle")
+//   .data(newsData)
+//   .enter()
+//   .append("text")
+//   .attr("dx", d => newXScale(d[chosenXAxis]))
+//   .text(d => d.abbr); // - (r.here)
 
 // (7) function used for updating circles group with new tooltip - (review)
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
@@ -206,6 +212,16 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   .attr("r", 20)
   .attr("fill", "pink")
   .attr("opacity", ".5");
+
+  // (6) function used for updating state names // ------------> COme back!
+  var abbrGroup = chartGroup.selectAll("div")
+    .data(newsData)
+    .enter()
+    .append("text")
+    .text(d => d.abbr)
+    .attr("font-size", "10px")
+    .attr("x", d => xLinearScale(d[chosenXAxis]) - 8)
+    .attr("y", d => yLinearScale(d[chosenYAxis]) + 2);
 
   /*
   This begins the appending and creation of xLabel elements
