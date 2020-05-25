@@ -36,7 +36,8 @@ Functions for updating
 (2) xAxis,
 (3) yAxis,
 (4) circles group,
-(5) circles with tool tip
+(5) render state names
+(6) circles with tool tip
 */
 
 // (1) function used for updating x-scale var upon click on axis label
@@ -98,7 +99,9 @@ function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
   return circlesGroup;
 }
 
-// (6) function used for updating circles group with new tooltip - (review)
+// (6) function used for updating state names
+
+// (7) function used for updating circles group with new tooltip - (review)
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
   var xLabel;
@@ -118,8 +121,11 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   if (chosenYAxis === "smokes") {
     yLabel = "Smokers (%)";
   }
+  if (chosenYAxis === "obesity") {
+    yLabel = "Obesity (%)";
+  }
   else {
-    yLabel = "None chosen";
+    yLabel = "Healthcare (%)";
   }
 
   var toolTip = d3.tip()
@@ -138,6 +144,11 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     .on("mouseout", function(data, index) {
       toolTip.hide(data);
     });
+
+  // Console log chosen labels
+  console.log('--- Chosen Labels ---') // <--- rm
+  console.log(xLabel);
+  console.log(yLabel);
 
   return circlesGroup;
 }
@@ -225,7 +236,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   var xLabelIncome = xLabelsGroup.append("text")
   .attr("x", 0) // x stays put for x axis
   .attr("y", 60) // y positive is moving down 20 pixels
-  .attr("value", "age") // value to grab for event listener
+  .attr("value", "income") // value to grab for event listener
   .classed("inactive", true)
   .text("Household Income (Median)");
 
@@ -272,6 +283,9 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   .on("click", function() {
     // get value of selection
     var value = d3.select(this).attr("value");
+    
+    console.log(`CLicked value is: ${value}`); // <--- rm
+
     if (value !== chosenXAxis) {
 
       // replaces chosenXAxis with value
@@ -333,6 +347,9 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   .on("click", function() {
     // get value of selection
     var value = d3.select(this).attr("value");
+
+    console.log(`CLicked value is: ${value}`); // <--- rm
+
     if (value !== chosenYAxis) {
 
       // replaces chosenYAxis with value which
@@ -355,7 +372,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
       circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
       // changes yAxis classes to change bold text
-      if (chosenXAxis === "poverty") {
+      if (chosenYAxis === "smokes") {
         yLabelSmokes // active
           .classed("active", true)
           .classed("inactive", false);
@@ -366,7 +383,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .classed("active", false)
         .classed("inactive", true);
       }
-      else if (chosenXAxis === "age") {
+      else if (chosenYAxis === "obesity") {
         yLabelSmokes
           .classed("active", false)
           .classed("inactive", true);
