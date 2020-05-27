@@ -36,8 +36,10 @@ Functions for updating
 (2) xAxis,
 (3) yAxis,
 (4) circles group,
-(5) render state names
-(6) circles with tool tip
+(5) updates circles by x axis
+(6) updates circles by y axis
+(7) render state names
+(8) circles with tool tip
 */
 
 // (1) function used for updating x-scale var upon click on axis label
@@ -88,7 +90,7 @@ function renderYAxes(newYScale, yAxis) {
   return yAxis;
 }
 
-// (5) function used for updating circles group with a transition to
+// (5) function used for updating X circles group with a transition to
 // new circles
 function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
 
@@ -99,15 +101,27 @@ function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
   return circlesGroup;
 }
 
-// (6) function used for updating state names
-// var abbrGroup = chartGroup.selectAll("circle")
-//   .data(newsData)
-//   .enter()
-//   .append("text")
-//   .attr("dx", d => newXScale(d[chosenXAxis]))
-//   .text(d => d.abbr); // - (r.here)
+// (6) function used for updating Y circles group with a transition to
+// new circles
+function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
 
-// (7) function used for updating circles group with new tooltip - (review)
+  circlesGroup.transition()
+    .duration(1000)
+    .attr("cy", d => newYScale(d[chosenYAxis]));
+
+  return circlesGroup;
+}
+
+// (7) function used for updating state names
+function renderAbbr(abbrGroup, newXScale, newYScale, chosenXAxis, chosenYAxis) {
+
+  abbrGroup.transition()
+  .duration(1000)
+  .attr("x", d => newXScale(d[chosenXAxis]) - 8)
+  .attr("y", d => newYScale(d[chosenYAxis]) + 2);
+}
+
+// (8) function used for updating circles group with new tooltip - (review)
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
   var xLabel;
@@ -136,14 +150,14 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
   var toolTip = d3.tip()
     .attr("class", "tooltip")
-    .offset([80, -60])
+    .offset([-20, -20])
     .html(function(d) {
       return (`${yLabel} ${d[chosenYAxis]}<br>${xLabel} ${d[chosenXAxis]}`);
     });
 
   circlesGroup.call(toolTip);
 
-  circlesGroup.on("mouseover", function(data) {
+  circlesGroup.on("click", function(data) {
     toolTip.show(data);
   })
     // onmouseout event
@@ -213,7 +227,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   .attr("fill", "pink")
   .attr("opacity", ".5");
 
-  // (6) function used for updating state names // ------------> COme back!
+  // append initial states
   var abbrGroup = chartGroup.selectAll("div")
     .data(newsData)
     .enter()
@@ -322,6 +336,9 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
       // updates tooltips with new info
       circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
+      // update Abbr
+      renderAbbr(abbrGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+
       // changes xAxis classes to change bold text
       if (chosenXAxis === "poverty") {
         xLabelPoverty // active
@@ -382,10 +399,13 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
       yAxis = renderYAxes(yLinearScale, yAxis);
 
       // updates circles with new x values
-      circlesGroup = renderXCircles(circlesGroup, yLinearScale, chosenYAxis);
+      circlesGroup = renderYCircles(circlesGroup, yLinearScale, chosenYAxis);
 
       // updates tooltips with new info
       circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
+      // update Abbr
+      renderAbbr(abbrGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
 
       // changes yAxis classes to change bold text
       if (chosenYAxis === "smokes") {
