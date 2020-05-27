@@ -117,8 +117,9 @@ function renderAbbr(abbrGroup, newXScale, newYScale, chosenXAxis, chosenYAxis) {
 
   abbrGroup.transition()
   .duration(1000)
-  .attr("x", d => newXScale(d[chosenXAxis]) - 8)
-  .attr("y", d => newYScale(d[chosenYAxis]) + 2);
+  .attr("x", d => newXScale(d[chosenXAxis]))
+  .attr("y", d => newYScale(d[chosenYAxis]))
+  .attr("text-anchor", "middle");
 }
 
 // (8) function used for updating circles group with new tooltip - (review)
@@ -130,26 +131,26 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     xLabel = "Poverty (%):";
   }
   else if (chosenXAxis === "age") {
-    xLabel = "Age: Median";
+    xLabel = "Age (Median):";
   }
   else {
-    xLabel = "Income";
+    xLabel = "Income (Median):";
   }
 
   var yLabel;
 
   if (chosenYAxis === "smokes") {
-    yLabel = "Smokers (%)";
+    yLabel = "Smokers (%):";
   }
   if (chosenYAxis === "obesity") {
-    yLabel = "Obesity (%)";
+    yLabel = "Obesity (%):";
   }
   else {
-    yLabel = "Healthcare (%)";
+    yLabel = "Healthcare (%):";
   }
 
   var toolTip = d3.tip()
-    .attr("class", "tooltip")
+    .attr("class", "d3-tip")
     .offset([-20, -20])
     .html(function(d) {
       return (`${yLabel} ${d[chosenYAxis]}<br>${xLabel} ${d[chosenXAxis]}`);
@@ -157,13 +158,15 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
   circlesGroup.call(toolTip);
 
-  circlesGroup.on("click", function(data) {
+  circlesGroup
+  .on("mouseover", function(data) {
     toolTip.show(data);
   })
-    // onmouseout event
-    .on("mouseout", function(data, index) {
-      toolTip.hide(data);
-    });
+
+  // onmouseout event
+  .on("mouseout", function(data, index) {
+    toolTip.hide(data);
+  });
 
   // Console log chosen labels
   console.log('--- Chosen Labels ---') // <--- rm
@@ -172,8 +175,6 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
   return circlesGroup;
 }
-
-
 
 // Extract data from CSV
 (async function(){
@@ -221,21 +222,23 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   .data(newsData)
   .enter()
   .append("circle")
+  .attr("class", "stateCircle")
   .attr("cx", d => xLinearScale(d[chosenXAxis])) // - (r.here)
   .attr("cy", d => yLinearScale(d[chosenYAxis]))
-  .attr("r", 20)
-  .attr("fill", "pink")
-  .attr("opacity", ".5");
+  .attr("r", 15)
+  .attr("opacity", ".9");
 
   // append initial states
   var abbrGroup = chartGroup.selectAll("div")
     .data(newsData)
     .enter()
     .append("text")
+    .attr("class", "stateText")
     .text(d => d.abbr)
     .attr("font-size", "10px")
-    .attr("x", d => xLinearScale(d[chosenXAxis]) - 8)
-    .attr("y", d => yLinearScale(d[chosenYAxis]) + 2);
+    .attr("x", d => xLinearScale(d[chosenXAxis]))
+    .attr("y", d => yLinearScale(d[chosenYAxis]))
+    .attr("text-anchor", "middle");
 
   /*
   This begins the appending and creation of xLabel elements
