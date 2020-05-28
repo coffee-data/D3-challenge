@@ -118,7 +118,7 @@ function renderAbbr(abbrGroup, newXScale, newYScale, chosenXAxis, chosenYAxis) {
   abbrGroup.transition()
   .duration(1000)
   .attr("x", d => newXScale(d[chosenXAxis]))
-  .attr("y", d => newYScale(d[chosenYAxis]))
+  .attr("y", d => newYScale(d[chosenYAxis]) + 2)
   .attr("text-anchor", "middle");
 }
 
@@ -160,7 +160,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
   circlesGroup
   .on("mouseover", function(data) {
-    toolTip.show(data);
+    toolTip.show(data, this);
   })
 
   // onmouseout event
@@ -225,19 +225,19 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   .attr("class", "stateCircle")
   .attr("cx", d => xLinearScale(d[chosenXAxis])) // - (r.here)
   .attr("cy", d => yLinearScale(d[chosenYAxis]))
-  .attr("r", 15)
+  .attr("r", 10)
   .attr("opacity", ".9");
 
   // append initial states
-  var abbrGroup = chartGroup.selectAll("div")
+  var abbrGroup = chartGroup.selectAll("circles")
     .data(newsData)
     .enter()
     .append("text")
     .attr("class", "stateText")
     .text(d => d.abbr)
-    .attr("font-size", "10px")
+    .attr("font-size", "8px")
     .attr("x", d => xLinearScale(d[chosenXAxis]))
-    .attr("y", d => yLinearScale(d[chosenYAxis]))
+    .attr("y", d => yLinearScale(d[chosenYAxis]) + 2)
     .attr("text-anchor", "middle");
 
   /*
