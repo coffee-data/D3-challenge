@@ -1,4 +1,4 @@
-// Boiler plate margin code
+// Set svg space wit margins
 var svgWidth = 960;
 var svgHeight = 500;
 
